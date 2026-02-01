@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Projeto Especial | Barcos de Alumínio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Projeto Especial de barco de alumínio. Embarcações personalizadas sob medida para cada cliente.">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+.viewer {
+  width: 100%;
+  height: 420px;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  user-select: none;
+  pointer-events: none;
+}
+
+video {
+  width: 100%;
+  margin-top: 30px;
+  border-radius: 10px;
+}
+
+.gallery {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.gallery img {
+  width: 100%;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Projeto Especial</h1>
+  <p>
+    Embarcação de alumínio totalmente personalizada,
+    desenvolvida conforme a necessidade do cliente:
+    tamanho, reforços, layout interno e acabamento.
+  </p>
+
+  <!-- VISUALIZAÇÃO 360 -->
+  <div class="viewer" id="viewer">
+    <img id="viewerImage" src="../img/projeto-especial/01.jpg" alt="Projeto Especial 360°">
+  </div>
+
+  <!-- VÍDEO -->
+  <video controls>
+    <source src="../videos/projeto-especial.mp4" type="video/mp4">
+    Seu navegador não suporta vídeo.
+  </video>
+
+  <!-- GALERIA -->
+  <div class="gallery">
+    <img src="../img/projeto-especial/foto1.jpg" alt="Projeto Especial">
+    <img src="../img/projeto-especial/foto2.jpg" alt="Projeto Especial">
+    <img src="../img/projeto-especial/foto3.jpg" alt="Projeto Especial">
+  </div>
+</div>
+
+<script>
+let frame = 1;
+const totalFrames = 24;
+
+const img = document.getElementById("viewerImage");
+const viewer = document.getElementById("viewer");
+
+let isDragging = false;
+let startX = 0;
+
+function updateFrame(direction) {
+  frame += direction;
+  if (frame > totalFrames) frame = 1;
+  if (frame < 1) frame = totalFrames;
+
+  img.src = img.src.replace(
+    /(\d{2})\.jpg$/,
+    String(frame).padStart(2, '0') + '.jpg'
+  );
+}
+
+/* ===== DESKTOP (MOUSE) ===== */
+viewer.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  startX = e.clientX;
+});
+
+viewer.addEventListener("mouseup", () => isDragging = false);
+viewer.addEventListener("mouseleave", () => isDragging = false);
+
+viewer.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+
+  const delta = e.clientX - startX;
+  if (Math.abs(delta) > 10) {
+    updateFrame(delta > 0 ? 1 : -1);
+    startX = e.clientX;
+  }
+});
+
+/* ===== MOBILE (TOUCH) ===== */
+viewer.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+});
+
+viewer.addEventListener("touchmove", (e) => {
+  const delta = e.touches[0].clientX - startX;
+
+  if (Math.abs(delta) > 10) {
+    updateFrame(delta > 0 ? 1 : -1);
+    startX = e.touches[0].clientX;
+  }
+});
+</script>
+
+
+</body>
+</html>
